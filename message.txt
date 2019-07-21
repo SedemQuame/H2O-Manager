@@ -1,0 +1,6 @@
+Hello ${PERSON_NAME},
+
+Your tank is at ${CAPACITY} capacity.
+Should I initiate the refilling process?
+
+(Y/N)?
