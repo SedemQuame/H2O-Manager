@@ -43,6 +43,8 @@ def menu():
 	print("===============================")
 	return(int(input("Choice: ")))
 
+
+
 def get_tank_data():
 	print("Current tank data will be printed here.")
 
@@ -51,7 +53,14 @@ def get_tank_data():
 def setting_and_configuration():
 	print("settings and let user decide what to do.")
 
+
+
+
+
+
+
 choice = menu()
+
 
 if choice == 1:
 	print("Options.")
