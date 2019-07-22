@@ -90,7 +90,7 @@ def read_template(filename):
         template_file_content = template_file.read()
     return Template(template_file_content)
 
-def main():
+def notifications():
     names, emails, phones = get_contacts('contacts.txt') # read contacts
     message_template = read_template('message.txt')
     
@@ -100,5 +100,6 @@ def main():
     #Send EMAIL using the MailGun api.
     send_email(names, emails)   
  
-if __name__ == '__main__':
+"""if __name__ == '__main__':
     main()
+"""
