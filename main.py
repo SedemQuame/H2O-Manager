@@ -60,10 +60,7 @@ def get_tank_data():
     for row in results:
         dates.append(row[0])
         water_level.append(int(row[1]))
-    
-    print(dates)
-    print(water_level)
-    
+        
     graph(water_level, dates)
 
     
