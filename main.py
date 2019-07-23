@@ -1,6 +1,7 @@
 """ This is a simple program, to get user credentials and write them to a file ie. contacts file."""
 from send_notification import notifications
 from db_utils import db_connect, get_data
+from plot_data import graph
 
 file_containing_data = 'contacts.txt'
 
@@ -58,10 +59,12 @@ def get_tank_data():
     water_level = []
     for row in results:
         dates.append(row[0])
-        water_level.append(row[1])
+        water_level.append(int(row[1]))
     
     print(dates)
     print(water_level)
+    
+    graph(water_level, dates)
 
     
 
