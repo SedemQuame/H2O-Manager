@@ -1,5 +1,6 @@
 """ This is a simple program, to get user credentials and write them to a file ie. contacts file."""
 from send_notification import notifications
+from db_utils import db_connect, get_data
 
 file_containing_data = 'contacts.txt'
 
@@ -47,6 +48,22 @@ def menu():
 
 def get_tank_data():
     print("Current tank data will be printed here.")
+    """ Retrieving data from the tank."""
+    results = get_data(db_connect())
+    
+    """date_str, water_level = result[0], result[1]
+    return zip(date_str, water_level)"""
+    
+    dates = []
+    water_level = []
+    for row in results:
+        dates.append(row[0])
+        water_level.append(row[1])
+    
+    print(dates)
+    print(water_level)
+
+    
 
 
 
@@ -84,7 +101,9 @@ def interface():
     else:
         print("Input not recognised. \r\nTry again")
 
-while True:
+get_tank_data()
+
+"""while True:
     check_tank_level()
     choice = menu()
-    interface()
+    interface()"""
