@@ -2,6 +2,7 @@
 from send_notification import notifications
 from db_utils import db_connect, get_data
 from plot_data import graph
+from soilmoisture import read_soil_moisture
 
 file_containing_data = 'contacts.txt'
 
@@ -49,12 +50,9 @@ def menu():
 
 def get_tank_data():
     print("Current tank data will be printed here.")
+    
     """ Retrieving data from the tank."""
     results = get_data(db_connect())
-    
-    """date_str, water_level = result[0], result[1]
-    return zip(date_str, water_level)"""
-    
     dates = []
     water_level = []
     for row in results:
@@ -101,9 +99,9 @@ def interface():
     else:
         print("Input not recognised. \r\nTry again")
 
-get_tank_data()
 
-"""while True:
+while True:
     check_tank_level()
+    get_tank_data()
     choice = menu()
-    interface()"""
+    interface()
