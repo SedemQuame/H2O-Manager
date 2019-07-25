@@ -16,13 +16,13 @@ def graph(water_levels, dates):
         i = i + 1
         
     plt.plot(water_levels)
-    plt.xticks(x, dates, rotation = 30)
+    plt.xticks(x, dates, rotation = 'vertical', fontsize=6)
     #plt.xtickslabels(dates, rotation='vertical', fontsize=18)
     #plt.xticks(x, dates)
     plt.title("Graph of Date Vs Water Level.")
     plt.grid(b=True)
     plt.ylabel("Water Level History")
-    plt.xlabel("Dates")
+    plt.xlabel("Date On Which Level Was Recorded")
     plt.show()
  
 

@@ -18,10 +18,6 @@ status = read_soil_moisture()
 currentTime = status[0]
 levelIndicator = status[1]
 
-#Functions to print currentTime and levelIndicator.
-print(currentTime)
-print(levelIndicator)
-
 #Twilio Api Credentials.
 # Your Account Sid and Auth Token from twilio.com/console
 # DANGER! This is insecure. See http://twil.io/secure
@@ -41,13 +37,11 @@ def send_sms(phones, message_template, names):
                          from_= TWILIO_NUMBER,
                          to = str(num)
                      )
-    
-    return(message.sid)    
-    
+    return(message.sid)
 
 
 
-def send_email(names, emails):
+def send_email(names,message_template, emails):
     # set up the SMTP server
     s = smtplib.SMTP(host= SMTP_HOST, port=587)
     s.starttls()
@@ -58,10 +52,7 @@ def send_email(names, emails):
         msg = MIMEMultipart()       # create a message
 
         # add in the actual person name to the message template
-        message = message_template.substitute(PERSON_NAME=name.title(), CAPACITY=(str(capacity)+"%").title())
-
-        # Prints out the message body for our sake
-        print(message)
+        message = message_template.substitute(PERSON_NAME=name.title(), CAPACITY=(str(levelIndicator)+"%").title())
 
         # setup the parameters of the message
         msg['From']=MY_ADDRESS
@@ -109,10 +100,9 @@ def read_template(filename):
 def notifications():
     names, emails, phones = get_contacts('contacts.txt') # read contacts
     message_template = read_template('message.txt')
-    
+ 
     #Send SMS using the twilio api.
     send_sms(phones, message_template, names)
-    
+
     #Send EMAIL using the MailGun api.
-    #send_email(names, emails)   
- 
+    #send_email(names,message_template, emails)
