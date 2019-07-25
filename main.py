@@ -2,7 +2,7 @@
 from send_notification import notifications
 from db_utils import db_connect, get_data
 from plot_data import graph
-from soilmoisture import read_soil_moisture
+#from soilmoisture import read_soil_moisture
 
 file_containing_data = 'contacts.txt'
 
@@ -20,9 +20,9 @@ def add_users():
     file.write(fullname + "," + email_address + "," + phone_number + "\r\n")
     file.close()
 
+
 def remove_users():
     #Function to remove user data from external file storage.
-    print("Nothing in this function right now.")
     """This can be achieved by readding the lines in the file and
     then rewriting it provided it does not have match a given condition."""
 
@@ -37,7 +37,6 @@ def remove_users():
                 file.write(line)
 
 
-
 def menu():
     print("==============MENU=============")
     print("!1) Add or Remove Users.      !")
@@ -49,33 +48,21 @@ def menu():
 
 
 def get_tank_data():
-    print("Current tank data will be printed here.")
-    
+    notifications()
+
     """ Retrieving data from the tank."""
     results = get_data(db_connect())
     dates = []
     water_level = []
     for row in results:
-        dates.append(row[0])
-        water_level.append(int(row[1]))
-        
-    graph(water_level, dates)
-
+        dates.append(row['data'])
+        water_level.append(int(row['water_level']))
     
-
+    graph(water_level, dates)    
 
 
 def setting_and_configuration():
     print("settings and let user decide what to do.")
-
-
-
-def check_tank_level():
-    print("Function to check and return the water level in a tank.")
-    
-    #send notifications.
-    notifications()
-    
 
 
 def interface():
@@ -101,7 +88,5 @@ def interface():
 
 
 while True:
-    check_tank_level()
-    get_tank_data()
     choice = menu()
     interface()

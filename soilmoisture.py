@@ -1,35 +1,41 @@
-#!/usr/bin/python3
-#Author - Nagendra Thangella
-#Disclaimer - No warranties or guaranties. Use this at your own risk.
-#Prior to running this program, install Rpi-GPIO using command "sudo apt-get install rpi.gpio"
-import RPi.GPIO as GPIO; import datetime; import time
+import RPi.GPIO as GPIO; import datetime; import time; import random
+from db_utils import create_entry, db_connect
 
-#Define Static variables, file names and time format
-#pollTime below is set to 1 second
-#Besides the below pins, I use pin 1 for 3.3V
-rPin = 7; yPin = 11; gPin = 23  
-pollTime = 1; prevStatus = -1; timeFormat = "%I:%M:%S %p"
+def read_soil_moisture():
+    rPin = 7; yPin = 11; gPin = 23  
+    pollTime = 1; prevStatus = -1; timeFormat = "%Y-%m-%d"
 
-#Setup GPIO
-GPIO.setwarnings(False); GPIO.setmode(GPIO.BOARD)
-#Setup various pins
-GPIO.setup([gPin,yPin,rPin], GPIO.IN, GPIO.PUD_DOWN)
+    #Setup GPIO
+    GPIO.setwarnings(False); GPIO.setmode(GPIO.BOARD)
+    
+    #Setup various pins
+    GPIO.setup([gPin,yPin,rPin], GPIO.IN, GPIO.PUD_DOWN)
+    
+    #Get status of input pins
+    red = GPIO.input(rPin); yellow = GPIO.input(yPin); green = GPIO.input(gPin)
+    status = (red * 4) + (yellow * 2) + (green * 1)
+    
+    if status != prevStatus:
+        levelIndicator = ((("25","50")[green == 1],"75")[yellow == 1],"100")[red == 1]
+        prevStatus = status
 
-#Run infintely until user interrupts
-try:
-    while 1:
-        #Get status of input pins
-        red = GPIO.input(rPin); yellow = GPIO.input(yPin); green = GPIO.input(gPin)
-        status = (red * 4) + (yellow * 2) + (green * 1)
-        #If status changes, set level indicator as red, yellow, green or blue in that order
-        # blue (no pin) is on when all red, yellow and green are off. 
-        if status != prevStatus:
-            levelIndicator = ((("0-25%","25-50%")[green == 1],"50-75%")[yellow == 1],"75-100%")[red == 1]
-            prevStatus = status
-            currentTime = datetime.datetime.now().strftime(timeFormat)
-            print ("Status of water level at %s is %s \r\n" % (currentTime, levelIndicator))
-        time.sleep(pollTime)
-#when user interrupts, cleanup and exit
-except KeyboardInterrupt:
+        if levelIndicator == str(25):
+            levelIndicator = random.randint(0, 25)
+        elif levelIndicator == str(50):
+            levelIndicator = random.randint(25, 50)
+        elif levelIndicator == str(75):
+            levelIndicator = random.randint(50, 75)
+        else:
+            levelIndicator = random.randint(75, 100)
+
+        #get time at which sensor's data was taken.
+        currentTime = str(datetime.datetime.now().strftime(timeFormat))
+        
+        #store sensor data into database.
+        create_entry(db_connect(), currentTime, levelIndicator)
+    time.sleep(pollTime)
+    
+    #when user interrupts, cleanup and exit
     GPIO.cleanup()
-print("Exiting")
+
+    return [currentTime, levelIndicator]
